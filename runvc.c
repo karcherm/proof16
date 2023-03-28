@@ -189,7 +189,7 @@ static const unsigned char to16_trampoline[] = {
 	0xff, 0x36, 0x18, 0x00,       //   pushw (0x18)  [CS]
 	0xff, 0x36, 0x1A, 0x00,       //   pushw (0x1A)  [IP]
 	0x8e, 0x1e, 0x1C, 0x00,       //   mov (0x1C), %ds
-	0xcb,                         //   iret
+	0xcf,                         //   iret
 };
 
 static const unsigned char from16_trampoline[] = {
