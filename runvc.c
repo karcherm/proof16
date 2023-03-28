@@ -73,19 +73,19 @@ void init_call_trampoline()
 __attribute__((naked, regparm(1))) void switch_stack_(void* dummy)
 {
 	__asm__ __volatile__(
-        "mov %%" REGPARM1 ", %%rdi\n"
-	    "mov %%rsp, %%rsi\n"
-	    "mov %%rsp, %%rcx\n"
-	    "and $0xFFF, %%rcx\n"
-	    "add %%rcx, %%rdi\n"
-	    "add $0xF000, %%rdi\n"
-	    "xor $0xFFF, %%rcx\n"
-	    "inc %%rcx\n"
-	    "sub %%rcx, %%rdi\n" 
-	    "mov %%rdi, %%rax\n"
-	    "rep ; movsb\n"
-	    "mov %%rax, %%rsp\n"
-	    "ret" : : : "rdi","rax","rsi","rcx","memory");
+		"mov %%" REGPARM1 ", %%rdi\n"
+		"mov %%rsp, %%rsi\n"
+		"mov %%rsp, %%rcx\n"
+		"and $0xFFF, %%rcx\n"
+		"add %%rcx, %%rdi\n"
+		"add $0xF000, %%rdi\n"
+		"xor $0xFFF, %%rcx\n"
+		"inc %%rcx\n"
+		"sub %%rcx, %%rdi\n" 
+		"mov %%rdi, %%rax\n"
+		"rep ; movsb\n"
+		"mov %%rax, %%rsp\n"
+		"ret" : : : "rdi","rax","rsi","rcx","memory");
 
 }
 #define switch_stack() do { switch_stack_(map32(0x10000, 0)); } while(0)
@@ -133,12 +133,12 @@ void dump_screen(unsigned char *screenbase)
 		{
 			if (screenbase[2*(80*row + col) + 1] == 0x70)
 				fwrite("\x1b[7m", 4, 1, stdout);
-            else
-                fwrite("\x1b[0m", 4, 1, stdout);
-            putchar(screenbase[2*(80*row + col)]);
-        }
-        putchar('\n');
-    }
+			else
+				fwrite("\x1b[0m", 4, 1, stdout);
+			putchar(screenbase[2*(80*row + col)]);
+		}
+		putchar('\n');
+	}
 }
 
 struct trampoline_data {
@@ -184,7 +184,7 @@ static const unsigned char to16_trampoline[] = {
 	0x17,                         //   pop %ss
 	0x8b, 0x26, 0x14, 0x00,       //   mov (0x14), %sp (load SP just after setting SS for atomic stack switch)
 	                              //   further access to data has to be performed via DS, as SS no longer
-				      //   points to TRAMPOLINE_DATA
+	                              //   points to TRAMPOLINE_DATA
 	0xff, 0x36, 0x16, 0x00,       //   pushw (0x16)  [FLAGS]
 	0xff, 0x36, 0x18, 0x00,       //   pushw (0x18)  [CS]
 	0xff, 0x36, 0x1A, 0x00,       //   pushw (0x1A)  [IP]
@@ -329,8 +329,8 @@ int main(void)
 	memcpy(codebase+0x6A81, "\xE8\xAC\x95", 3);      // call 0030
 	memset(codebase+0x6A84, 0x90, 12);
 
-    /* remove STI (executed in MDA path too, intended to revert CGA CLI) */
-    *(uint8_t*)(codebase+0x6A4B) = 0x90;
+	/* remove STI (executed in MDA path too, intended to revert CGA CLI) */
+	*(uint8_t*)(codebase+0x6A4B) = 0x90;
 
 	/* Keyboard interface related stuff */
 	/* -------------------------------- */
@@ -396,7 +396,7 @@ int main(void)
 		context16->r_bp, context16->r_si, context16->r_di,
 		context16->r_ds, context16->r_es); */
 
-    dump_screen(screenbase);
+	dump_screen(screenbase);
 
 	return 0;
 }
