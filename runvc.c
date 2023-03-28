@@ -262,6 +262,8 @@ int main(void)
 	unsigned char* codebase;
 	unsigned char* screenbase;
 	struct user_desc my_desc;
+	uint16_t exit_ofs;
+
 	const int DATA_SELECTOR = LDTSEL_L3(DATA_INDEX);
 	const int CODE_SELECTOR = LDTSEL_L3(CODE_INDEX);
 	const int SCREEN_SELECTOR = SCREEN_INDEX * INDEX_MULTIPLIER + IS_LDT + 3;
@@ -370,9 +372,10 @@ int main(void)
 	*(uint16_t*)(codebase+2) = DATA_SELECTOR + 0x758;
 	*(uint16_t*)(codebase+0x404d) = 0x9090; // skip loading ES
 
-	*(uint8_t*)(codebase+0x2A5A) = 0x9A;               // CALL FAR
-	*(uint16_t*)(codebase+0x2A5B) = FROM16_OFS;
-	*(uint16_t*)(codebase+0x2A5D) = LDTSEL_L3(TRAMPOLINE_CODE_INDEX);
+	exit_ofs = 0x2A5A;
+	*(uint8_t*)(codebase+exit_ofs) = 0x9A;               // CALL FAR
+	*(uint16_t*)(codebase+exit_ofs+1) = FROM16_OFS;
+	*(uint16_t*)(codebase+exit_ofs+3) = LDTSEL_L3(TRAMPOLINE_CODE_INDEX);
 	//printf("mapped to: %8p\n", codebase);
 
 	context16->r_cs = CODE_SELECTOR;
